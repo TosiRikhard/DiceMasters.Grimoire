@@ -7,7 +7,6 @@ namespace DiceMasters.Grimoire.ViewModels;
 
 [ProtoContract]
 public partial class AreaViewModel : ObservableObject {
-
     [ProtoMember(1)]
     [ObservableProperty]
     private string _name = "";
@@ -15,6 +14,9 @@ public partial class AreaViewModel : ObservableObject {
     [ProtoMember(2)]
     [ObservableProperty]
     private ObservableCollection<CreatureViewModel> _creatures = [];
+
+    [ObservableProperty]
+    private string _originalName = "";
 
     [ObservableProperty]
     private bool _isEditing = false;
@@ -29,17 +31,5 @@ public partial class AreaViewModel : ObservableObject {
     private void RemoveCreature(CreatureViewModel creature)
     {
         Creatures.Remove(creature);
-    }
-
-    [RelayCommand]
-    private void FinishEditAreaName()
-    {
-        IsEditing = false;
-    }
-
-    [RelayCommand]
-    private void CancelEditAreaName()
-    {
-        IsEditing = false;
     }
 }

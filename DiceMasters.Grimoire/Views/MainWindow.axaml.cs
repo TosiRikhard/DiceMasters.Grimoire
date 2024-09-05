@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -11,6 +12,16 @@ namespace DiceMasters.Grimoire.Views {
         public MainWindow()
         {
             InitializeComponent();
+            this.PointerPressed += Window_PointerPressed;
+        }
+
+        private void Window_PointerPressed(object? sender, PointerPressedEventArgs e)
+        {
+            var hitTestResult = this.InputHitTest(e.GetPosition(this));
+            if (hitTestResult == this)
+            {
+                this.Focus();
+            }
         }
 
         private async void TextBlock_DoubleTapped(object? sender, TappedEventArgs e)
@@ -18,12 +29,9 @@ namespace DiceMasters.Grimoire.Views {
             if (sender is TextBlock textBlock &&
                 textBlock.DataContext is AreaViewModel areaViewModel)
             {
+                areaViewModel.OriginalName = areaViewModel.Name;
                 areaViewModel.IsEditing = true;
-
-                // Wait for the UI to update
                 await Task.Delay(10);
-
-                // Find the TextBox in the same Grid as the TextBlock
                 if (textBlock.Parent is Grid grid)
                 {
                     var textBox = grid.Children.OfType<TextBox>().FirstOrDefault();
@@ -41,16 +49,14 @@ namespace DiceMasters.Grimoire.Views {
             if (sender is TextBox textBox &&
                 textBox.DataContext is AreaViewModel areaViewModel)
             {
-                if (e.Key == Key.Enter)
+                if (e.Key == Key.Enter || e.Key == Key.Tab)
                 {
-                    areaViewModel.IsEditing = false;
+                    AcceptChanges(areaViewModel, textBox);
                     e.Handled = true;
                 }
                 else if (e.Key == Key.Escape)
                 {
-                    areaViewModel.IsEditing = false;
-                    // Revert the name change
-                    textBox.Text = areaViewModel.Name;
+                    CancelChanges(areaViewModel, textBox);
                     e.Handled = true;
                 }
             }
@@ -61,7 +67,34 @@ namespace DiceMasters.Grimoire.Views {
             if (sender is TextBox textBox &&
                 textBox.DataContext is AreaViewModel areaViewModel)
             {
-                areaViewModel.IsEditing = false;
+                AcceptChanges(areaViewModel, textBox);
+            }
+        }
+
+        private void AcceptChanges(AreaViewModel areaViewModel, TextBox textBox)
+        {
+            areaViewModel.Name = textBox.Text;
+            areaViewModel.IsEditing = false;
+        }
+
+        private void CancelChanges(AreaViewModel areaViewModel, TextBox textBox)
+        {
+            areaViewModel.Name = areaViewModel.OriginalName;
+            textBox.Text = areaViewModel.Name;
+            areaViewModel.IsEditing = false;
+        }
+
+        private void DeleteArea_Click(object? sender, RoutedEventArgs e)
+        {
+            if (sender is Button button &&
+                button.DataContext is AreaViewModel areaViewModel &&
+                DataContext is MainWindowViewModel mainViewModel)
+            {
+                if (areaViewModel.IsEditing)
+                {
+                    CancelChanges(areaViewModel, null);
+                }
+                mainViewModel.RemoveAreaCommand.Execute(areaViewModel);
             }
         }
     }
