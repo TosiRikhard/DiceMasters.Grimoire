@@ -7,6 +7,7 @@ namespace DiceMasters.Grimoire.ViewModels;
 
 [ProtoContract]
 public partial class AreaViewModel : ObservableObject {
+
     [ProtoMember(1)]
     [ObservableProperty]
     private string _name = "";

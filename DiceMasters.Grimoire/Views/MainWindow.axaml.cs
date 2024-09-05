@@ -1,21 +1,22 @@
-using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using DiceMasters.Grimoire.ViewModels;
 using System.Threading.Tasks;
-using Avalonia.VisualTree;
 using System.Linq;
 
-namespace DiceMasters.Grimoire.Views {
-    public partial class MainWindow : Window {
+namespace DiceMasters.Grimoire.Views
+{
+    public partial class MainWindow : Window
+    {
         public MainWindow()
         {
             InitializeComponent();
-            this.PointerPressed += Window_PointerPressed;
+            PointerPressed += Window_PointerPressed;
         }
 
-        private void Window_PointerPressed(object? sender, PointerPressedEventArgs e)
+        private void Window_PointerPressed(object? sender,
+            PointerPressedEventArgs                e)
         {
             var hitTestResult = this.InputHitTest(e.GetPosition(this));
 
@@ -37,85 +38,100 @@ namespace DiceMasters.Grimoire.Views {
 
             if (hitTestResult == this)
             {
-                this.Focus();
+                Focus();
             }
         }
 
-        private async void TextBlock_DoubleTapped(object? sender, TappedEventArgs e)
+        private async void TextBlock_DoubleTapped(object? sender,
+            TappedEventArgs                               e)
         {
-            if (sender is TextBlock textBlock &&
-                textBlock.DataContext is AreaViewModel areaViewModel)
+            if (sender is not TextBlock { DataContext: AreaViewModel areaViewModel } textBlock)
             {
-                areaViewModel.OriginalName = areaViewModel.Name;
-                areaViewModel.IsEditing = true;
-                await Task.Delay(10);
-                if (textBlock.Parent is Grid grid)
-                {
-                    var textBox = grid.Children.OfType<TextBox>().FirstOrDefault();
-                    if (textBox != null)
-                    {
-                        textBox.Focus();
-                        textBox.CaretIndex = textBox.Text?.Length ?? 0;
-                    }
-                }
+                return;
+            }
+
+            areaViewModel.OriginalName = areaViewModel.Name;
+            areaViewModel.IsEditing    = true;
+            await Task.Delay(10);
+
+            if (textBlock.Parent is not Grid grid)
+            {
+                return;
+            }
+
+            var textBox = grid.Children.OfType<TextBox>().FirstOrDefault();
+
+            if (textBox is not null)
+            {
+                textBox.Focus();
+                textBox.CaretIndex = textBox.Text?.Length ?? 0;
             }
         }
 
-        private void TextBox_KeyDown(object? sender, KeyEventArgs e)
+        private void TextBox_KeyDown(object? sender,
+            KeyEventArgs                     e)
         {
-            if (sender is TextBox textBox &&
-                textBox.DataContext is AreaViewModel areaViewModel)
+            if (sender is not TextBox { DataContext: AreaViewModel areaViewModel } textBox)
             {
-                if (e.Key == Key.Enter || e.Key == Key.Tab)
-                {
+                return;
+            }
+
+            switch (e.Key)
+            {
+                case Key.Enter or Key.Tab:
                     AcceptChanges(areaViewModel, textBox);
                     e.Handled = true;
-                }
-                else if (e.Key == Key.Escape)
-                {
+                    break;
+                case Key.Escape:
                     CancelChanges(areaViewModel, textBox);
                     e.Handled = true;
-                }
+                    break;
             }
         }
 
-        private void TextBox_LostFocus(object? sender, RoutedEventArgs e)
+        private void TextBox_LostFocus(object? sender,
+            RoutedEventArgs                    e)
         {
-            if (sender is TextBox textBox &&
-                textBox.DataContext is AreaViewModel areaViewModel)
+            if (sender is TextBox { DataContext: AreaViewModel areaViewModel } textBox)
             {
                 AcceptChanges(areaViewModel, textBox);
             }
         }
 
-        private void AcceptChanges(AreaViewModel areaViewModel, TextBox? textBox)
+        private void AcceptChanges(AreaViewModel areaViewModel,
+            TextBox?                             textBox)
         {
-            if (textBox != null)
+            if (textBox?.Text is not null)
             {
                 areaViewModel.Name = textBox.Text;
             }
+
             areaViewModel.IsEditing = false;
         }
 
-        private void CancelChanges(AreaViewModel areaViewModel, TextBox textBox)
+        private void CancelChanges(AreaViewModel areaViewModel,
+            TextBox?                             textBox)
         {
-            areaViewModel.Name = areaViewModel.OriginalName;
-            textBox.Text = areaViewModel.Name;
+            areaViewModel.Name      = areaViewModel.OriginalName;
+            if (textBox != null) textBox.Text = areaViewModel.Name;
             areaViewModel.IsEditing = false;
         }
 
-        private void DeleteArea_Click(object? sender, RoutedEventArgs e)
+        private void DeleteArea_Click(object? sender,
+            RoutedEventArgs                   e)
         {
-            if (sender is Button button &&
-                button.DataContext is AreaViewModel areaViewModel &&
-                DataContext is MainWindowViewModel mainViewModel)
+            if (sender is not Button { DataContext: AreaViewModel areaViewModel } ||
+                DataContext is not MainWindowViewModel mainViewModel)
             {
-                if (areaViewModel.IsEditing)
-                {
-                    CancelChanges(areaViewModel, null);
-                }
-                mainViewModel.RemoveAreaCommand.Execute(areaViewModel);
+                return;
             }
+
+            if (areaViewModel.IsEditing)
+            {
+                CancelChanges(areaViewModel, null);
+            }
+
+            mainViewModel.RemoveAreaCommand.Execute(areaViewModel);
         }
     }
 }

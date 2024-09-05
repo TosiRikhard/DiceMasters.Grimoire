@@ -2,15 +2,14 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.IO;
 using Avalonia.Platform.Storage;
 using Avalonia;
-using Avalonia.Controls;
 using ProtoBuf;
 
 namespace DiceMasters.Grimoire.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase {
+public partial class MainWindowViewModel : ViewModelBase
+{
     private IStorageProvider? GetStorageProvider()
     {
         if (Application.Current is null) return null;
@@ -55,11 +54,11 @@ public partial class MainWindowViewModel : ViewModelBase {
             DefaultExtension = "dmg",
             FileTypeChoices = new[]
             {
-                new FilePickerFileType("DiceMaster's Grimoire Files") { Patterns = new[] { "*.dmg" } }
+                new FilePickerFileType("DiceMaster's Grimoire Files") { Patterns = ["*.dmg"] }
             }
         });
 
-        if (file != null)
+        if (file is not null)
         {
             await using var stream = await file.OpenWriteAsync();
             Serializer.Serialize(stream, Areas);
@@ -77,18 +76,18 @@ public partial class MainWindowViewModel : ViewModelBase {
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("DiceMaster's Grimoire Files") { Patterns = new[] { "*.dmg" } }
+                new FilePickerFileType("DiceMaster's Grimoire Files") { Patterns = ["*.dmg"] }
             }
         });
 
         if (files.Count > 0)
         {
-            var file = files[0];
-            await using var stream = await file.OpenReadAsync();
-            var loadedAreas = Serializer.Deserialize<ObservableCollection<AreaViewModel>>(stream);
+            var             file        = files[0];
+            await using var stream      = await file.OpenReadAsync();
+            var             loadedAreas = Serializer.Deserialize<ObservableCollection<AreaViewModel>>(stream);
             if (loadedAreas != null)
             {
-                Areas = loadedAreas;
+                Areas        = loadedAreas;
                 SelectedArea = Areas.Count > 0 ? Areas[0] : null;
             }
         }

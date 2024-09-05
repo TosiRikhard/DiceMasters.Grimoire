@@ -9,7 +9,7 @@
              x:DataType="vm:AreaViewModel">
 
     <DockPanel>
-        <Button DockPanel.Dock="Top" Command="{Binding AddCreatureCommand}" Content="Add Creature" Margin="10"/>
+        <Button DockPanel.Dock="Top" Command="{Binding AddCreatureCommand}" Content="Add Creature" Margin="10" />
         <ScrollViewer>
             <ItemsControl ItemsSource="{Binding Creatures}">
                 <ItemsControl.ItemTemplate>

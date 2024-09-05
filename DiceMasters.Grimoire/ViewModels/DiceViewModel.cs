@@ -7,6 +7,7 @@ namespace DiceMasters.Grimoire.ViewModels;
 
 [ProtoContract]
 public partial class DiceViewModel : ObservableObject {
+
     [ProtoMember(1)]
     [ObservableProperty]
     private int _quantity = 1;

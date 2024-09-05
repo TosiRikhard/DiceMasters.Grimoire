@@ -7,28 +7,29 @@
              x:Class="DiceMasters.Grimoire.UserControls.DiceControl"
              x:DataType="vm:DiceViewModel">
 
-  <Border BorderBrush="LightGray" BorderThickness="1" Margin="0,5,0,0" Padding="5">
-    <StackPanel>
-      <DockPanel>
-        <Button DockPanel.Dock="Right"
-                Command="{Binding $parent[ItemsControl].((vm:CreatureViewModel)DataContext).RemoveDiceCommand}"
-                CommandParameter="{Binding}"
-                Content="Remove"/>
-        <StackPanel Orientation="Horizontal">
-          <TextBlock Text="Quantity:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-          <TextBox Text="{Binding Quantity}" Watermark="Quantity" Width="60" Margin="0,0,10,0"/>
-          <TextBlock Text="Sides:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-          <TextBox Text="{Binding Sides}" Watermark="Sides" Width="60" Margin="0,0,10,0"/>
-          <TextBlock Text="Modifier:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-          <TextBox Text="{Binding Modifier}" Watermark="Modifier" Width="60" Margin="0,0,10,0"/>
-          <TextBlock Text="Description:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-          <TextBox Text="{Binding Description}" Watermark="Description" Width="120"/>
+    <Border BorderBrush="LightGray" BorderThickness="1" Margin="0,5,0,0" Padding="5">
+        <StackPanel>
+            <DockPanel>
+                <Button DockPanel.Dock="Right"
+                        Command="{Binding $parent[ItemsControl].((vm:CreatureViewModel)DataContext).RemoveDiceCommand}"
+                        CommandParameter="{Binding}"
+                        Content="Remove" />
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Quantity:" VerticalAlignment="Center" Margin="0,0,5,0" />
+                    <TextBox Text="{Binding Quantity}" Watermark="Quantity" Width="60" Margin="0,0,10,0" />
+                    <TextBlock Text="Sides:" VerticalAlignment="Center" Margin="0,0,5,0" />
+                    <TextBox Text="{Binding Sides}" Watermark="Sides" Width="60" Margin="0,0,10,0" />
+                    <TextBlock Text="Modifier:" VerticalAlignment="Center" Margin="0,0,5,0" />
+                    <TextBox Text="{Binding Modifier}" Watermark="Modifier" Width="60" Margin="0,0,10,0" />
+                    <TextBlock Text="Description:" VerticalAlignment="Center" Margin="0,0,5,0" />
+                    <TextBox Text="{Binding Description}" Watermark="Description" Width="120" />
+                </StackPanel>
+            </DockPanel>
+            <DockPanel Margin="0,5,0,0">
+                <Button DockPanel.Dock="Left" Command="{Binding RollCommand}" Content="Roll" />
+                <TextBlock Text="{Binding Result, StringFormat='Result: {0}'}" VerticalAlignment="Center"
+                           Margin="10,0,0,0" />
+            </DockPanel>
         </StackPanel>
-      </DockPanel>
-      <DockPanel Margin="0,5,0,0">
-        <Button DockPanel.Dock="Left" Command="{Binding RollCommand}" Content="Roll"/>
-        <TextBlock Text="{Binding Result, StringFormat='Result: {0}'}" VerticalAlignment="Center" Margin="10,0,0,0"/>
-      </DockPanel>
-    </StackPanel>
-  </Border>
+    </Border>
 </UserControl>
