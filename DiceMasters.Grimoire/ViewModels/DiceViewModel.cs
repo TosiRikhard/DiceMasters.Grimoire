@@ -1,18 +1,25 @@
 ﻿using System;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ProtoBuf;
 
 namespace DiceMasters.Grimoire.ViewModels;
+
+[ProtoContract]
 public partial class DiceViewModel : ObservableObject {
+    [ProtoMember(1)]
     [ObservableProperty]
     private int _quantity = 1;
 
+    [ProtoMember(2)]
     [ObservableProperty]
     private int _sides = 6;
 
+    [ProtoMember(3)]
     [ObservableProperty]
     private int _modifier = 0;
 
+    [ProtoMember(4)]
     [ObservableProperty]
     private string _description = "";
 

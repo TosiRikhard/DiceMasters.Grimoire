@@ -1,0 +1,34 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:DiceMasters.Grimoire.ViewModels"
+             xmlns:components="using:DiceMasters.Grimoire.UserControls"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="DiceMasters.Grimoire.UserControls.CreatureControl"
+             x:DataType="vm:CreatureViewModel">
+
+    <Border BorderBrush="Gray" BorderThickness="1" Margin="5" Padding="5" Classes="creature">
+        <Expander IsExpanded="{Binding IsExpanded}">
+            <Expander.Header>
+                <DockPanel>
+                    <Button DockPanel.Dock="Right"
+                            Command="{Binding $parent[ItemsControl].((vm:AreaViewModel)DataContext).RemoveCreatureCommand}"
+                            CommandParameter="{Binding}"
+                            Content="Remove"/>
+                    <TextBox Text="{Binding Name}" Watermark="Creature Name"/>
+                </DockPanel>
+            </Expander.Header>
+            <StackPanel>
+                <Button Command="{Binding AddDiceCommand}" Content="Add Dice" Margin="0,5,0,0"/>
+                <ItemsControl ItemsSource="{Binding Dice}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <components:DiceControl DataContext="{Binding}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </Expander>
+    </Border>
+</UserControl>

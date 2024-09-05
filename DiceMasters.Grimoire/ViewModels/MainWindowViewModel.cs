@@ -2,17 +2,15 @@
 using CommunityToolkit.Mvvm.Input;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
-using System.Text.Json;
 using System.IO;
 using Avalonia.Platform.Storage;
-using System.Linq;
 using Avalonia;
 using Avalonia.Controls;
+using ProtoBuf;
 
 namespace DiceMasters.Grimoire.ViewModels;
 
-public partial class MainWindowViewModel : ViewModelBase
-{
+public partial class MainWindowViewModel : ViewModelBase {
     private IStorageProvider? GetStorageProvider()
     {
         if (Application.Current is null) return null;
@@ -54,20 +52,17 @@ public partial class MainWindowViewModel : ViewModelBase
 
         var file = await storageProvider.SaveFilePickerAsync(new FilePickerSaveOptions
         {
-            DefaultExtension = "json",
+            DefaultExtension = "dmg",
             FileTypeChoices = new[]
             {
-                new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } }
+                new FilePickerFileType("DiceMaster's Grimoire Files") { Patterns = new[] { "*.dmg" } }
             }
         });
 
         if (file != null)
         {
-            var             options = new JsonSerializerOptions { WriteIndented = true };
-            var             json    = JsonSerializer.Serialize(Areas, options);
-            await using var stream  = await file.OpenWriteAsync();
-            await using var writer  = new StreamWriter(stream);
-            await writer.WriteAsync(json);
+            await using var stream = await file.OpenWriteAsync();
+            Serializer.Serialize(stream, Areas);
         }
     }
 
@@ -82,20 +77,18 @@ public partial class MainWindowViewModel : ViewModelBase
             AllowMultiple = false,
             FileTypeFilter = new[]
             {
-                new FilePickerFileType("JSON Files") { Patterns = new[] { "*.json" } }
+                new FilePickerFileType("DiceMaster's Grimoire Files") { Patterns = new[] { "*.dmg" } }
             }
         });
 
         if (files.Count > 0)
         {
-            var             file        = files[0];
-            await using var stream      = await file.OpenReadAsync();
-            using var       reader      = new StreamReader(stream);
-            var             json        = await reader.ReadToEndAsync();
-            var             loadedAreas = JsonSerializer.Deserialize<ObservableCollection<AreaViewModel>>(json);
+            var file = files[0];
+            await using var stream = await file.OpenReadAsync();
+            var loadedAreas = Serializer.Deserialize<ObservableCollection<AreaViewModel>>(stream);
             if (loadedAreas != null)
             {
-                Areas        = loadedAreas;
+                Areas = loadedAreas;
                 SelectedArea = Areas.Count > 0 ? Areas[0] : null;
             }
         }
