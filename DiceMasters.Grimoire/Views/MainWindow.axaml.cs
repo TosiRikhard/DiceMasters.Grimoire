@@ -18,6 +18,23 @@ namespace DiceMasters.Grimoire.Views {
         private void Window_PointerPressed(object? sender, PointerPressedEventArgs e)
         {
             var hitTestResult = this.InputHitTest(e.GetPosition(this));
+
+            if (DataContext is MainWindowViewModel mainViewModel)
+            {
+                var editingArea = mainViewModel.Areas.FirstOrDefault(a => a.IsEditing);
+                if (editingArea != null)
+                {
+                    if (hitTestResult is TextBox textBox && textBox.DataContext == editingArea)
+                    {
+                        // Clicked inside the editing TextBox, do nothing
+                        return;
+                    }
+
+                    // Clicked outside the editing TextBox, accept changes
+                    AcceptChanges(editingArea, null);
+                }
+            }
+
             if (hitTestResult == this)
             {
                 this.Focus();
@@ -71,9 +88,12 @@ namespace DiceMasters.Grimoire.Views {
             }
         }
 
-        private void AcceptChanges(AreaViewModel areaViewModel, TextBox textBox)
+        private void AcceptChanges(AreaViewModel areaViewModel, TextBox? textBox)
         {
-            areaViewModel.Name = textBox.Text;
+            if (textBox != null)
+            {
+                areaViewModel.Name = textBox.Text;
+            }
             areaViewModel.IsEditing = false;
         }
 
