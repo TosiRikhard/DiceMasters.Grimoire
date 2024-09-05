@@ -1,0 +1,105 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:DiceMasters.Grimoire.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="DiceMasters.Grimoire.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="DiceMaster's Grimoire">
+
+  <Window.Styles>
+    <Style Selector="Border.creature:nth-child(2n)">
+      <Setter Property="Background" Value="#f0f0f0"/>
+    </Style>
+    <Style Selector="Border.creature:nth-child(2n+1)">
+      <Setter Property="Background" Value="#ffffff"/>
+    </Style>
+  </Window.Styles>
+
+  <DockPanel>
+    <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
+      <Button Command="{Binding AddAreaCommand}" Content="Add Area" Margin="0,0,10,0"/>
+      <Button Command="{Binding SaveStateCommand}" Content="Save" Margin="0,0,10,0"/>
+      <Button Command="{Binding LoadStateCommand}" Content="Load" Margin="0,0,10,0"/>
+    </StackPanel>
+
+    <TabControl ItemsSource="{Binding Areas}" SelectedItem="{Binding SelectedArea}">
+      <TabControl.ItemTemplate>
+          <DataTemplate DataType="vm:AreaViewModel">
+              <Grid ColumnDefinitions="*,Auto">
+                  <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
+                             IsVisible="{Binding !IsEditing}"
+                             DoubleTapped="TextBlock_DoubleTapped"/>
+                  <TextBox Grid.Column="0" Text="{Binding Name}" IsVisible="{Binding IsEditing}"
+                           KeyDown="TextBox_KeyDown" LostFocus="TextBox_LostFocus"/>
+                  <Button Grid.Column="1" Command="{Binding $parent[TabControl].((vm:MainWindowViewModel)DataContext).RemoveAreaCommand}"
+                          CommandParameter="{Binding}" Content="X" Margin="5,0,0,0"/>
+              </Grid>
+          </DataTemplate>
+      </TabControl.ItemTemplate>
+      <TabControl.ContentTemplate>
+        <DataTemplate DataType="vm:AreaViewModel">
+          <DockPanel>
+            <Button DockPanel.Dock="Top" Command="{Binding AddCreatureCommand}" Content="Add Creature" Margin="10"/>
+            <ScrollViewer>
+              <ItemsControl ItemsSource="{Binding Creatures}">
+                <ItemsControl.ItemTemplate>
+                  <DataTemplate DataType="vm:CreatureViewModel">
+                    <Border BorderBrush="Gray" BorderThickness="1" Margin="5" Padding="5" Classes="creature">
+                      <Expander IsExpanded="{Binding IsExpanded}">
+                        <Expander.Header>
+                          <DockPanel>
+                            <Button DockPanel.Dock="Right"
+                                    Command="{Binding $parent[ItemsControl].((vm:AreaViewModel)DataContext).RemoveCreatureCommand}"
+                                    CommandParameter="{Binding}"
+                                    Content="Remove"/>
+                            <TextBox Text="{Binding Name}" Watermark="Creature Name"/>
+                          </DockPanel>
+                        </Expander.Header>
+                        <StackPanel>
+                          <Button Command="{Binding AddDiceCommand}" Content="Add Dice" Margin="0,5,0,0"/>
+                          <ItemsControl ItemsSource="{Binding Dice}">
+                            <ItemsControl.ItemTemplate>
+                              <DataTemplate DataType="vm:DiceViewModel">
+                                <Border BorderBrush="LightGray" BorderThickness="1" Margin="0,5,0,0" Padding="5">
+                                  <StackPanel>
+                                    <DockPanel>
+                                      <Button DockPanel.Dock="Right"
+                                              Command="{Binding $parent[ItemsControl].((vm:CreatureViewModel)DataContext).RemoveDiceCommand}"
+                                              CommandParameter="{Binding}"
+                                              Content="Remove"/>
+                                      <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="Quantity:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                        <TextBox Text="{Binding Quantity}" Watermark="Quantity" Width="60" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Sides:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                        <TextBox Text="{Binding Sides}" Watermark="Sides" Width="60" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Modifier:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                        <TextBox Text="{Binding Modifier}" Watermark="Modifier" Width="60" Margin="0,0,10,0"/>
+                                        <TextBlock Text="Description:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                        <TextBox Text="{Binding Description}" Watermark="Description" Width="120"/>
+                                      </StackPanel>
+                                    </DockPanel>
+                                    <DockPanel Margin="0,5,0,0">
+                                      <Button DockPanel.Dock="Left" Command="{Binding RollCommand}" Content="Roll"/>
+                                      <TextBlock Text="{Binding Result, StringFormat='Result: {0}'}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+                                    </DockPanel>
+                                  </StackPanel>
+                                </Border>
+                              </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                          </ItemsControl>
+                        </StackPanel>
+                      </Expander>
+                    </Border>
+                  </DataTemplate>
+                </ItemsControl.ItemTemplate>
+              </ItemsControl>
+            </ScrollViewer>
+          </DockPanel>
+        </DataTemplate>
+      </TabControl.ContentTemplate>
+    </TabControl>
+  </DockPanel>
+</Window>

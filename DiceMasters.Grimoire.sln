@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35219.272
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiceMasters.Grimoire", "DiceMasters.Grimoire\DiceMasters.Grimoire.csproj", "{BA3E846D-EE43-40B1-91FF-E2FA893E2AED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA3E846D-EE43-40B1-91FF-E2FA893E2AED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA3E846D-EE43-40B1-91FF-E2FA893E2AED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA3E846D-EE43-40B1-91FF-E2FA893E2AED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA3E846D-EE43-40B1-91FF-E2FA893E2AED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4ECC10F5-7260-40D6-855A-D6BF4FF57698}
+	EndGlobalSection
+EndGlobal
