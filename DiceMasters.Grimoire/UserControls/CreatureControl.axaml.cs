@@ -1,4 +1,7 @@
 using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.Interactivity;
+using DiceMasters.Grimoire.ViewModels;
 
 namespace DiceMasters.Grimoire.UserControls;
 
