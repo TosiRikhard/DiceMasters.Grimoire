@@ -16,18 +16,13 @@
                   Command="{Binding $parent[ItemsControl].((vm:AreaViewModel)DataContext).RemoveCreatureCommand}"
                   CommandParameter="{Binding}"
                   Content="Remove" />
-          <TextBlock Text="{Binding Name}"
-                     VerticalAlignment="Center"
-                     Margin="5,0"/>
-        </DockPanel>
-      </Expander.Header>
-      <StackPanel>
-        <DockPanel Margin="0,5,0,5">
           <TextBlock Text="Name: " VerticalAlignment="Center" Margin="0,0,5,0"/>
           <TextBox Text="{Binding Name}"
                    Watermark="Enter creature name"
                    x:Name="NameTextBox"/>
         </DockPanel>
+      </Expander.Header>
+      <StackPanel>
         <Button Command="{Binding AddDiceCommand}" Content="Add Dice" Margin="0,5,0,0" />
         <ItemsControl ItemsSource="{Binding Dice}">
           <ItemsControl.ItemTemplate>
