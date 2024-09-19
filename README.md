@@ -80,7 +80,7 @@ DiceMaster's Grimoire allows you to save your entire game state and load it late
 
 ## Installation
 
-1. Visit the [Releases](https://github.com/TosiRikhard/dicemasters-grimoire/releases) page of the DiceMaster's Grimoire repository.
+1. Visit the [Releases](https://github.com/TosiRikhard/DiceMasters.Grimoire/releases/) page of the DiceMaster's Grimoire repository.
 2. Download the latest version
 3. Extract the downloaded archive to your preferred location.
 4. Run the `DiceMasters.Grimoire` executable to start the application.
