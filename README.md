@@ -43,7 +43,7 @@ DiceMaster's Grimoire allows you to create, edit, and organize your game world i
 - **Adding Areas**: Click the "Add Area" button at the top of the window to create a new area.
 - **Renaming Areas**: Double-click on an area's name to edit it. Press Enter, tab or click outside the text box to save changes.
 - **Cancel Renaming**: Press ESC to cancel name editing.
-- **Removing Areas**: Click the "X" button next to an area's name to delete it.
+- **Removing Areas**: Click the "X" button next to an area's name to delete it, confirming the action in the dialog box.
 
 ![Area Management](/Images/area-management.gif)
 
