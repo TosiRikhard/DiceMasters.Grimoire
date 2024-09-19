@@ -13,6 +13,7 @@ public partial class MainWindowViewModel : ViewModelBase
 {
     [ObservableProperty] private ObservableCollection<AreaViewModel> _areas = [];
     [ObservableProperty] private AreaViewModel?                      _selectedArea;
+    [ObservableProperty] private ConfirmationOverlayViewModel        _confirmationOverlay = new();
 
     private IStorageProvider? GetStorageProvider()
     {
@@ -38,15 +39,21 @@ public partial class MainWindowViewModel : ViewModelBase
     [RelayCommand]
     private void RemoveArea(AreaViewModel area)
     {
-        if (area.IsEditing)
-        {
-            CancelAreaEditing(area);
-        }
+        ConfirmationOverlay.Show(
+            $"Are you sure you want to delete the area '{area.Name}'?",
+            () =>
+            {
+                if (area.IsEditing)
+                {
+                    CancelAreaEditing(area);
+                }
 
-        if (Areas.Remove(area) && SelectedArea == area)
-        {
-            SelectedArea = Areas.Count > 0 ? Areas[0] : null;
-        }
+                if (Areas.Remove(area) && SelectedArea == area)
+                {
+                    SelectedArea = Areas.Count > 0 ? Areas[0] : null;
+                }
+            }
+        );
     }
 
     [RelayCommand]

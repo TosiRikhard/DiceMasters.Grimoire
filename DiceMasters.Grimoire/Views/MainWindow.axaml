@@ -18,34 +18,37 @@
             <Setter Property="Background" Value="#ffffff" />
         </Style>
     </Window.Styles>
+    <Grid>
+        <DockPanel>
+            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
+                <Button Command="{Binding AddAreaCommand}" Content="Add Area" Margin="0,0,10,0" />
+                <Button Command="{Binding SaveStateCommand}" Content="Save" Margin="0,0,10,0" />
+                <Button Command="{Binding LoadStateCommand}" Content="Load" Margin="0,0,10,0" />
+            </StackPanel>
 
-    <DockPanel>
-        <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="10">
-            <Button Command="{Binding AddAreaCommand}" Content="Add Area" Margin="0,0,10,0" />
-            <Button Command="{Binding SaveStateCommand}" Content="Save" Margin="0,0,10,0" />
-            <Button Command="{Binding LoadStateCommand}" Content="Load" Margin="0,0,10,0" />
-        </StackPanel>
+            <TabControl ItemsSource="{Binding Areas}" SelectedItem="{Binding SelectedArea}">
+                <TabControl.ItemTemplate>
+                    <DataTemplate DataType="vm:AreaViewModel">
+                        <Grid ColumnDefinitions="*,Auto">
+                            <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
+                                       IsVisible="{Binding !IsEditing}"
+                                       DoubleTapped="TextBlock_DoubleTapped" />
+                            <TextBox Grid.Column="0" Text="{Binding Name}" IsVisible="{Binding IsEditing}"
+                                     KeyDown="TextBox_KeyDown" LostFocus="TextBox_LostFocus" />
+                            <Button Grid.Column="1" Content="X" Margin="5,0,0,0"
+                                    Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).RemoveAreaCommand}"
+                                    CommandParameter="{Binding}" />
+                        </Grid>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        <components:AreaControl DataContext="{Binding}" />
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+            </TabControl>
+        </DockPanel>
 
-        <TabControl ItemsSource="{Binding Areas}" SelectedItem="{Binding SelectedArea}">
-            <TabControl.ItemTemplate>
-                <DataTemplate DataType="vm:AreaViewModel">
-                    <Grid ColumnDefinitions="*,Auto">
-                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"
-                                   IsVisible="{Binding !IsEditing}"
-                                   DoubleTapped="TextBlock_DoubleTapped" />
-                        <TextBox Grid.Column="0" Text="{Binding Name}" IsVisible="{Binding IsEditing}"
-                                 KeyDown="TextBox_KeyDown" LostFocus="TextBox_LostFocus" />
-                        <Button Grid.Column="1" Content="X" Margin="5,0,0,0"
-                                Command="{Binding $parent[ItemsControl].((vm:MainWindowViewModel)DataContext).RemoveAreaCommand}"
-                                CommandParameter="{Binding}" />
-                    </Grid>
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-            <TabControl.ContentTemplate>
-                <DataTemplate>
-                    <components:AreaControl DataContext="{Binding}" />
-                </DataTemplate>
-            </TabControl.ContentTemplate>
-        </TabControl>
-    </DockPanel>
+        <components:ConfirmationOverlay DataContext="{Binding ConfirmationOverlay}" />
+    </Grid>
 </Window>

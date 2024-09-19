@@ -2,9 +2,9 @@ using Avalonia.Controls;
 
 namespace DiceMasters.Grimoire.UserControls;
 
-public partial class CreatureControl : UserControl
+public partial class ConfirmationOverlay : UserControl
 {
-    public CreatureControl()
+    public ConfirmationOverlay()
     {
         InitializeComponent();
     }
