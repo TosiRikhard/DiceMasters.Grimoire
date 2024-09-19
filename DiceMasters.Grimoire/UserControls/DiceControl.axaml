@@ -6,30 +6,44 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="DiceMasters.Grimoire.UserControls.DiceControl"
              x:DataType="vm:DiceViewModel">
-
-    <Border BorderBrush="LightGray" BorderThickness="1" Margin="0,5,0,0" Padding="5">
-        <StackPanel>
-            <DockPanel>
-                <Button DockPanel.Dock="Right"
-                        Command="{Binding $parent[ItemsControl].((vm:CreatureViewModel)DataContext).RemoveDiceCommand}"
-                        CommandParameter="{Binding}"
-                        Content="Remove" />
-                <StackPanel Orientation="Horizontal">
-                    <TextBlock Text="Quantity:" VerticalAlignment="Center" Margin="0,0,5,0" />
-                    <TextBox Text="{Binding Quantity}" Watermark="Quantity" Width="60" Margin="0,0,10,0" />
-                    <TextBlock Text="Sides:" VerticalAlignment="Center" Margin="0,0,5,0" />
-                    <TextBox Text="{Binding Sides}" Watermark="Sides" Width="60" Margin="0,0,10,0" />
-                    <TextBlock Text="Modifier:" VerticalAlignment="Center" Margin="0,0,5,0" />
-                    <TextBox Text="{Binding Modifier}" Watermark="Modifier" Width="60" Margin="0,0,10,0" />
-                    <TextBlock Text="Description:" VerticalAlignment="Center" Margin="0,0,5,0" />
-                    <TextBox Text="{Binding Description}" Watermark="Description" Width="120" />
-                </StackPanel>
-            </DockPanel>
-            <DockPanel Margin="0,5,0,0">
-                <Button DockPanel.Dock="Left" Command="{Binding RollCommand}" Content="Roll" />
-                <TextBlock Text="{Binding Result, StringFormat='Result: {0}'}" VerticalAlignment="Center"
-                           Margin="10,0,0,0" />
-            </DockPanel>
+  <Border BorderBrush="LightGray" BorderThickness="1" Margin="0,5,0,0" Padding="5">
+    <StackPanel>
+      <DockPanel>
+        <Button DockPanel.Dock="Right"
+                Command="{Binding $parent[ItemsControl].((vm:CreatureViewModel)DataContext).RemoveDiceCommand}"
+                CommandParameter="{Binding}"
+                Content="Remove" />
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Text="Quantity:" VerticalAlignment="Center" Margin="0,0,5,0" />
+          <TextBox Text="{Binding Quantity}" Watermark="Quantity" Width="60" Margin="0,0,10,0" />
+          <TextBlock Text="Sides:" VerticalAlignment="Center" Margin="0,0,5,0" />
+          <TextBox Text="{Binding Sides}" Watermark="Sides" Width="60" Margin="0,0,10,0" />
+          <TextBlock Text="Modifier:" VerticalAlignment="Center" Margin="0,0,5,0" />
+          <TextBox Text="{Binding Modifier}" Watermark="Modifier" Width="60" Margin="0,0,10,0" />
+          <TextBlock Text="Description:" VerticalAlignment="Center" Margin="0,0,5,0" />
+          <TextBox Text="{Binding Description}" Watermark="Description" Width="120" />
         </StackPanel>
-    </Border>
+      </DockPanel>
+      <DockPanel Margin="0,5,0,0">
+        <Button DockPanel.Dock="Left" Command="{Binding RollCommand}" Content="Roll" />
+        <StackPanel Orientation="Horizontal" IsVisible="{Binding HasRolled}" Margin="10,0,0,0">
+          <ItemsControl ItemsSource="{Binding IndividualRolls}">
+            <ItemsControl.ItemsPanel>
+              <ItemsPanelTemplate>
+                <StackPanel Orientation="Horizontal" />
+              </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding}" Foreground="Blue" Margin="0,0,2,0" />
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
+          <TextBlock Text="{Binding FormattedModifier}" Foreground="Orange" Margin="0,0,5,0" />
+          <TextBlock Text="=" Foreground="Green" Margin="0,0,5,0" />
+          <TextBlock Text="{Binding Result}" Foreground="Purple" FontWeight="Bold" />
+        </StackPanel>
+      </DockPanel>
+    </StackPanel>
+  </Border>
 </UserControl>

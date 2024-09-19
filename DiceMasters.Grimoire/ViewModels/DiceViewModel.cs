@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.ObjectModel;
+using System.Linq;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using ProtoBuf;
@@ -7,7 +9,6 @@ namespace DiceMasters.Grimoire.ViewModels;
 
 [ProtoContract]
 public partial class DiceViewModel : ObservableObject {
-
     [ProtoMember(1)]
     [ObservableProperty]
     private int _quantity = 1;
@@ -27,17 +28,29 @@ public partial class DiceViewModel : ObservableObject {
     [ObservableProperty]
     private int? _result;
 
+    [ObservableProperty]
+    private ObservableCollection<string> _individualRolls = new();
+
+    [ObservableProperty]
+    private bool _hasRolled = false;
+
+    public string FormattedModifier => Modifier == 0 ? "" : Modifier > 0 ? $"(+{Modifier})" : $"(-{Math.Abs(Modifier)})";
+
     public DiceViewModel() { } // Parameterless constructor for serialization
 
     [RelayCommand]
     private void Roll()
     {
         var random = new Random();
-        var total  = 0;
+        IndividualRolls.Clear();
+
         for (var i = 0; i < Quantity; i++)
         {
-            total += random.Next(1, Sides + 1);
+            IndividualRolls.Add($"[{random.Next(1, Sides + 1)}]");
         }
-        Result = total + Modifier;
+
+        Result    = IndividualRolls.Sum(r => int.Parse(r.Trim('[', ']'))) + Modifier;
+        HasRolled = true;
+        OnPropertyChanged(nameof(FormattedModifier));
     }
 }
