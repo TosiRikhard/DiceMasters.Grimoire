@@ -22,21 +22,10 @@ namespace DiceMasters.Grimoire.Views
 
             if (DataContext is MainWindowViewModel mainViewModel)
             {
-                var editingArea = mainViewModel.Areas.FirstOrDefault(a => a.IsEditing);
-                if (editingArea != null)
-                {
-                    if (hitTestResult is TextBox textBox && textBox.DataContext == editingArea)
-                    {
-                        // Clicked inside the editing TextBox, do nothing
-                        return;
-                    }
-
-                    // Clicked outside the editing TextBox, accept changes
-                    AcceptChanges(editingArea, null);
-                }
+                mainViewModel.HandleGlobalClick();
             }
 
-            if (hitTestResult == this)
+            if (Equals(hitTestResult, this))
             {
                 Focus();
             }
@@ -50,8 +39,11 @@ namespace DiceMasters.Grimoire.Views
                 return;
             }
 
-            areaViewModel.OriginalName = areaViewModel.Name;
-            areaViewModel.IsEditing    = true;
+            if (DataContext is MainWindowViewModel mainViewModel)
+            {
+                mainViewModel.StartEditAreaNameCommand.Execute(areaViewModel);
+            }
+
             await Task.Delay(10);
 
             if (textBlock.Parent is not Grid grid)
@@ -71,7 +63,8 @@ namespace DiceMasters.Grimoire.Views
         private void TextBox_KeyDown(object? sender,
             KeyEventArgs                     e)
         {
-            if (sender is not TextBox { DataContext: AreaViewModel areaViewModel } textBox)
+            if (sender is not TextBox { DataContext: AreaViewModel areaViewModel } textBox ||
+                DataContext is not MainWindowViewModel mainViewModel)
             {
                 return;
             }
@@ -79,11 +72,11 @@ namespace DiceMasters.Grimoire.Views
             switch (e.Key)
             {
                 case Key.Enter or Key.Tab:
-                    AcceptChanges(areaViewModel, textBox);
+                    mainViewModel.AcceptAreaChangesCommand.Execute(areaViewModel);
                     e.Handled = true;
                     break;
                 case Key.Escape:
-                    CancelChanges(areaViewModel, textBox);
+                    mainViewModel.CancelAreaEditingCommand.Execute(areaViewModel);
                     e.Handled = true;
                     break;
             }
@@ -92,29 +85,11 @@ namespace DiceMasters.Grimoire.Views
         private void TextBox_LostFocus(object? sender,
             RoutedEventArgs                    e)
         {
-            if (sender is TextBox { DataContext: AreaViewModel areaViewModel } textBox)
+            if (sender is TextBox { DataContext: AreaViewModel areaViewModel } &&
+                DataContext is MainWindowViewModel mainViewModel)
             {
-                AcceptChanges(areaViewModel, textBox);
+                mainViewModel.AcceptAreaChangesCommand.Execute(areaViewModel);
             }
-        }
-
-        private void AcceptChanges(AreaViewModel areaViewModel,
-            TextBox?                             textBox)
-        {
-            if (textBox?.Text is not null)
-            {
-                areaViewModel.Name = textBox.Text;
-            }
-
-            areaViewModel.IsEditing = false;
-        }
-
-        private void CancelChanges(AreaViewModel areaViewModel,
-            TextBox?                             textBox)
-        {
-            areaViewModel.Name      = areaViewModel.OriginalName;
-            if (textBox != null) textBox.Text = areaViewModel.Name;
-            areaViewModel.IsEditing = false;
         }
 
         private void DeleteArea_Click(object? sender,
@@ -124,11 +99,6 @@ namespace DiceMasters.Grimoire.Views
                 DataContext is not MainWindowViewModel mainViewModel)
             {
                 return;
-            }
-
-            if (areaViewModel.IsEditing)
-            {
-                CancelChanges(areaViewModel, null);
             }
 
             mainViewModel.RemoveAreaCommand.Execute(areaViewModel);

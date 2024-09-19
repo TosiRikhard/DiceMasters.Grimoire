@@ -5,11 +5,15 @@ using System.Threading.Tasks;
 using Avalonia.Platform.Storage;
 using Avalonia;
 using ProtoBuf;
+using System.Linq;
 
 namespace DiceMasters.Grimoire.ViewModels;
 
 public partial class MainWindowViewModel : ViewModelBase
 {
+    [ObservableProperty] private ObservableCollection<AreaViewModel> _areas = [];
+    [ObservableProperty] private AreaViewModel?                      _selectedArea;
+
     private IStorageProvider? GetStorageProvider()
     {
         if (Application.Current is null) return null;
@@ -22,10 +26,6 @@ public partial class MainWindowViewModel : ViewModelBase
         return null;
     }
 
-    [ObservableProperty] private ObservableCollection<AreaViewModel> _areas = [];
-
-    [ObservableProperty] private AreaViewModel? _selectedArea;
-
     [RelayCommand]
     private void AddArea()
     {
@@ -34,13 +34,39 @@ public partial class MainWindowViewModel : ViewModelBase
         SelectedArea = newArea;
     }
 
+
     [RelayCommand]
     private void RemoveArea(AreaViewModel area)
     {
+        if (area.IsEditing)
+        {
+            CancelAreaEditing(area);
+        }
+
         if (Areas.Remove(area) && SelectedArea == area)
         {
             SelectedArea = Areas.Count > 0 ? Areas[0] : null;
         }
+    }
+
+    [RelayCommand]
+    private void StartEditAreaName(AreaViewModel area)
+    {
+        area.OriginalName = area.Name;
+        area.IsEditing    = true;
+    }
+
+    [RelayCommand]
+    private void AcceptAreaChanges(AreaViewModel area)
+    {
+        area.IsEditing = false;
+    }
+
+    [RelayCommand]
+    private void CancelAreaEditing(AreaViewModel area)
+    {
+        area.Name      = area.OriginalName;
+        area.IsEditing = false;
     }
 
     [RelayCommand]
@@ -93,9 +119,12 @@ public partial class MainWindowViewModel : ViewModelBase
         }
     }
 
-    [RelayCommand]
-    private void StartEditAreaName(AreaViewModel area)
+    public void HandleGlobalClick()
     {
-        area.IsEditing = true;
+        var editingArea = Areas.FirstOrDefault(a => a.IsEditing);
+        if (editingArea != null)
+        {
+            AcceptAreaChanges(editingArea);
+        }
     }
 }
